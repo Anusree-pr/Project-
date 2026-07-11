@@ -7,10 +7,15 @@ The solution is optimized for edge computing, enabling real-time execution on re
 Key Features
 
 🌙 Low-light image enhancement using CLAHE
+
 👤 Real-time person detection with SSD MobileNetV2 (TensorFlow Lite)
+
 😊 Face detection using ResNet-10 (Caffe)
+
 🔐 Face verification with Siamese Neural Network
+
 🍓 Optimized for Raspberry Pi 4 edge deployment
+
 ⚡ Lightweight and cost-effective surveillance solution
 
 Tech Stack
