@@ -8,7 +8,7 @@ Key Features
 
 🌙 Low-light image enhancement using CLAHE
 
-👤 Real-time person detection with SSD MobileNetV2 (TensorFlow Lite)
+👤 Real-time person detection with SSD MobileNetV2(tflite)
 
 😊 Face detection using ResNet-10 (Caffe)
 
@@ -17,6 +17,7 @@ Key Features
 🍓 Optimized for Raspberry Pi 4 edge deployment
 
 ⚡ Lightweight and cost-effective surveillance solution
+
 
 Tech Stack
 
