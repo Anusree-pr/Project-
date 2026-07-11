@@ -1,0 +1,64 @@
+from imutils.video import VideoStream
+import numpy as np
+import time
+import cv2
+import imutils
+
+# we load in our facial detector caffe model. just copy and paste from the image detection or type along.
+
+# load the face detector model from filepath
+print("face detector model is currently loading....")
+# set address of prototxt file
+prototxtPath = "deploy.prototxt"
+# set the address of the caffe_model
+weightsPath = "res10_300x300_ssd_iter_140000.caffemodel"
+
+""" NOTE THAT YOUR ADDRESS OF PROTOTXTPATH AND WEIGHTSPATH SHOULD BE SIMILAR TO THAT OF OpenCV's I.E ...../face_detector/ the file to load"""
+
+net = cv2.dnn.readNet(prototxtPath, weightsPath)
+print("Done")
+
+print("initializing Video stream,")
+vs=cv2.VideoCapture(0) #start the video stream
+time.sleep(2.0) #set sleep time to 2.0 seconds
+
+#now we loop over the frames of the video stream
+while True:
+    #we grab the video frame and resize it's width to 400 pixels maximum
+    _,frame = vs.read() #read per frame of your video stream
+    #frame = imutils.resize(frame, width=400)# resize the video stream to a reasonable ratio.
+    
+    """ grab the frame you read off and convert to an input blob"""
+    (h,w) = frame.shape[:2] #pick height and weight from frame.
+    blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300,300)),1.0,(300,300),(104.0,177.0,123.0))
+    
+    """ pass the blob through the network and obtain detections and predictions"""
+    net.setInput(blob) #give blob to the neural network
+    detections = net.forward()
+    #loop over the detections:
+    for i in range(0, detections.shape[2]):
+        #extract it's confidence of detection
+        confidence = detections[0,0,i,2]
+        # filter out the weak detections by ensuring confidence is greater than 0.5
+        if confidence > 0.5:
+            #if satisfied, we compute the x, y co-ordinates for the bounding box
+            box = detections[0,0,i,3:7] * np.array([w,h,w,h])
+            (startX, startY, endX, endY) = box.astype("int")
+        
+            #Now draw the bounding box since you have correct dimensions
+            # Also, let's write the confidence of the model in text to be displayed.
+            text = str(confidence * 100) #this is the text
+       
+            #just in case the face is at the edge, we adjust where to write
+            y = startY -10 if startY -10 > 10 else startY + 10 
+            #tell cv to draw your rectangle and write your text as well, 
+            cv2.rectangle(frame, (startX, startY), (endX,endY), (0,225,0),2)
+            #specify your desired font too as well as other params, press shft + tab to see.
+            cv2.putText(frame, text, (startX, y),cv2.FONT_ITALIC, 0.5,(0,225,0),2)
+    cv2.imshow("Frame", frame)
+     # Closing a video frame
+    key = cv2.waitKey(1) #wait for the cv key
+    if key == ord("x"): # If the x button is pressed
+        break # Break from the loop
+vs.release() # Let opencv release the video loader
+cv2.destroyAllWindows() # Destroy all windows to close it
